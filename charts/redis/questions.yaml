@@ -1,0 +1,133 @@
+categories:
+- redis
+questions:
+- variable: image
+  default: "amenezes/redis-ha"
+  description: "Docker redis image"
+  group: "Container"
+  type: string
+  label: Docker redis container image
+- variable: imageTag
+  default: "stable"
+  description: "Docker redis tag image"
+  group: "Container"
+  type: string
+  label: Docker redis tag image
+- variable: privateRegistryName
+  default: "myPrivateRegistry"
+  description: "Private Registry Name"
+  group: "Container"
+  type: string
+  label: Private Registry Name
+- variable: sentinel.env.down_after
+  default: "2000"
+  description: "The time in milliseconds an instance should not be reachable"
+  group: "Sentinel"
+  type: string
+  label: down-after parameter for sentinel
+- variable: sentinel.env.failover_timeout
+  default: "3000"
+  description: "time where a slave is promoted to master"
+  group: "Sentinel"
+  type: string
+  label: failover-timeout parameter for sentinel
+- variable: sentinel.env.quorum
+  default: "3"
+  description: "Sentinel quorum"
+  group: "Sentinel"
+  type: string
+  label: Sentinel quorum
+- variable: sentinel.env.cluster_name
+  default: "mycluster"
+  description: "Sentinel will monitoring this master-name"
+  group: "Sentinel"
+  type: string
+  label: Sentinel cluster name
+- variable: antiAffinity
+  default: "soft"
+  description: "podAntiAffinity type"
+  group: "StatefulSet"
+  type: enum
+  options:
+    - "soft"
+    - "hard"
+  label: podAntiAffinity policy.
+- variable: replicas
+  default: "5"
+  description: "Redis+Sentinel replicas"
+  group: "StatefulSet"
+  type: string
+  label: Redis+Sentinel replicas
+- variable: redis.probe.readiness.initialDelaySeconds
+  default: "15"
+  description: "Readiness initialDelaySeconds"
+  group: "Redis Probes"
+  type: string
+  label: readiness initialDelaySeconds
+- variable: redis.probe.liveness.initialDelaySeconds
+  default: "30"
+  description: "Liveness initialDelaySeconds"
+  group: "Redis Probes"
+  type: string
+  label: liveness initialDelaySeconds
+- variable: redis.probe.readiness.timeoutSeconds
+  default: "5"
+  description: "Readiness timeoutSeconds"
+  group: "Redis Probes"
+  type: string
+  label: readiness timeoutSeconds
+- variable: redis.probe.liveness.timeoutSeconds
+  default: "5"
+  description: "Liveness timeoutSeconds"
+  group: "Redis Probes"
+  type: string
+  label: liveness timeoutSeconds
+- variable: redis.probe.readiness.periodSeconds
+  default: "10"
+  description: "Readiness periodSeconds"
+  group: "Redis Probes"
+  type: string
+  label: readiness periodSeconds
+- variable: redis.probe.liveness.periodSeconds
+  default: "10"
+  description: "Liveness periodSeconds"
+  group: "Redis Probes"
+  type: string
+  label: liveness periodSeconds
+- variable: sentinel.probe.readiness.initialDelaySeconds
+  default: "20"
+  description: "Readiness initialDelaySeconds"
+  group: "Sentinel Probes"
+  type: string
+  label: readiness initialDelaySeconds
+- variable: sentinel.probe.liveness.initialDelaySeconds
+  default: "30"
+  description: "Liveness initialDelaySeconds"
+  group: "Sentinel Probes"
+  type: string
+  label: liveness initialDelaySeconds
+- variable: sentinel.probe.readiness.timeoutSeconds
+  default: "5"
+  description: "Readiness timeoutSeconds"
+  group: "Sentinel Probes"
+  type: string
+  label: readiness timeoutSeconds
+- variable: sentinel.probe.liveness.timeoutSeconds
+  default: "5"
+  description: "Liveness timeoutSeconds"
+  group: "Sentinel Probes"
+  type: string
+  label: liveness timeoutSeconds
+- variable: sentinel.probe.readiness.periodSeconds
+  default: "10"
+  description: "Readiness periodSeconds"
+  group: "Sentinel Probes"
+  type: string
+  label: readiness periodSeconds
+- variable: sentinel.probe.liveness.periodSeconds
+  default: "10"
+  description: "Liveness periodSeconds"
+  group: "Sentinel Probes"
+  type: string
+  label: liveness periodSeconds
+

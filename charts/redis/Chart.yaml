@@ -1,0 +1,18 @@
+name: redis
+home: http://redis.io/
+engine: gotpl
+keywords:
+- redis
+version: 1.0.0
+appVersion: 1.0.0
+description: Highly available redis setup with sentinel statefulset.
+icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
+maintainers:
+  - email: alexandre.fmenezes@gmail.com
+    name: alexandre menezes
+details:
+  This helm chart provides a highly available redis with sentinel
+  statefulset.
+sources:
+  - https://github.com/amenezes/charts
+

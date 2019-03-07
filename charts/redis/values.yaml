@@ -1,0 +1,34 @@
+image: amenezes/redis-ha
+imageTag: stable
+privateRegistryName: myPrivateRegistry
+
+replicas: 5
+antiAffinity: soft
+
+redis:
+  probe:
+    readiness:
+      initialDelaySeconds: 15
+      timeoutSeconds: 5
+      periodSeconds: 10
+    liveness:
+      initialDelaySeconds: 30
+      timeoutSeconds: 5
+      periodSeconds: 10
+
+sentinel:
+  env:
+    down_after: 3000
+    failover_timeout: 2000
+    quorum: 3
+    cluster_name: mycluster
+  probe:
+    readiness:
+      initialDelaySeconds: 20
+      timeoutSeconds: 5
+      periodSeconds: 10
+    liveness:
+      initialDelaySeconds: 30
+      timeoutSeconds: 5
+      periodSeconds: 10
+

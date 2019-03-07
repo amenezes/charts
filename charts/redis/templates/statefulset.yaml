@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  serviceName: redis
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      terminationGracePeriodSeconds: 15
+      {{- if eq .Values.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: redis
+      {{- else if eq .Values.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: redis
+      {{- end }}
+      containers:
+      - name: redis
+        image: {{ .Values.image }}:{{ .Values.imageTag }}
+        imagePullPolicy: Always
+        ports:
+        - name: redis
+          protocol: TCP
+          containerPort: 6379
+        env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: CLUSTER_MODE
+            value: "true"
+          - name: PROFILE
+            value: "redis"
+          - name: MASTER_SVC
+            value: "redis-0.redis.$(NAMESPACE).svc.cluster.local"
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - "redis-cli -h $HOSTNAME ping"
+          initialDelaySeconds: {{ .Values.redis.probe.readiness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.redis.probe.readiness.timeoutSeconds }}
+          periodSeconds: {{ .Values.redis.probe.readiness.periodSeconds }}
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - "redis-cli -h $HOSTNAME ping"
+          initialDelaySeconds: {{ .Values.redis.probe.liveness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.redis.probe.liveness.timeoutSeconds }}
+          periodSeconds: {{ .Values.redis.probe.liveness.periodSeconds }}
+      - name: sentinel
+        image: {{ .Values.image }}:{{ .Values.imageTag }}
+        imagePullPolicy: Always
+        ports:
+        - name: sentinel
+          protocol: TCP
+          containerPort: 26379
+        env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: CLUSTER_MODE
+            value: "true"
+          - name: PROFILE
+            value: "sentinel"
+          - name: MASTER_SVC
+            value: "redis-0.redis.$(NAMESPACE).svc.cluster.local"
+          - name: DOWN_AFTER
+            value: {{ .Values.sentinel.env.down_after | quote }}
+          - name: FAILOVER_TIMEOUT
+            value: {{ .Values.sentinel.env.failover_timeout | quote }}
+          - name: QUORUM
+            value: {{ .Values.sentinel.env.quorum | quote }}
+          - name: CLUSTER_NAME
+            value: {{ .Values.sentinel.env.cluster_name | quote }}
+        readinessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - "redis-cli -h $HOSTNAME ping"
+          initialDelaySeconds: {{ .Values.sentinel.probe.readiness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.sentinel.probe.readiness.timeoutSeconds }}
+          periodSeconds: {{ .Values.sentinel.probe.readiness.periodSeconds }}
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - "redis-cli -h $HOSTNAME ping"
+          initialDelaySeconds: {{ .Values.sentinel.probe.liveness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.sentinel.probe.liveness.timeoutSeconds }}
+          periodSeconds: {{ .Values.sentinel.probe.liveness.periodSeconds }}
+      imagePullSecrets:
+      - name: {{ .Values.privateRegistryName }}
+
