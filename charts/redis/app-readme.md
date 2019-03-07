@@ -2,6 +2,7 @@
 
 ## Topology
 
+````txt
                    +----+
                    | M1 |
                    | S1 |
@@ -11,6 +12,7 @@
 | R2 |---+---| R3 |---+---| R4 |---+---| R5 |
 | S2 |       | S3 |       | S4 |       | S5 |
 +----+       +----+       +----+       +----+
+````
 
 If the master M1 fails, S2 and S3 will agree about the failure and will be able to authorize a failover, making clients able to continue.
 
